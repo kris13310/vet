@@ -1,0 +1,30 @@
+CREATE DATABASE IF NOT EXISTS veterinary_clinic_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE veterinary_clinic_db;
+CREATE TABLE IF NOT EXISTS users (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ full_name VARCHAR(120) NOT NULL,
+ username VARCHAR(50) NOT NULL UNIQUE,
+ email VARCHAR(190) NOT NULL UNIQUE,
+ password_hash VARCHAR(255) NOT NULL,
+ role ENUM('Administrator','Veterinarian','Veterinary Staff') NOT NULL DEFAULT 'Veterinary Staff',
+ status ENUM('Active','Inactive') NOT NULL DEFAULT 'Active',
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS pets (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(120) NOT NULL, species ENUM('Dog','Cat','Rabbit','Other') NOT NULL DEFAULT 'Other', breed VARCHAR(120), owner_name VARCHAR(120) NOT NULL, owner_email VARCHAR(190), owner_phone VARCHAR(40), address VARCHAR(255), age VARCHAR(40), gender ENUM('Male','Female','Unknown') DEFAULT 'Unknown', notes TEXT, created_by BIGINT UNSIGNED NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ CONSTRAINT fk_pets_creator FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS appointments (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, pet_id BIGINT UNSIGNED NOT NULL, veterinarian_id BIGINT UNSIGNED NULL, appointment_date DATE NOT NULL, appointment_time TIME NOT NULL, purpose VARCHAR(255) NOT NULL, status ENUM('Pending','Confirmed','In Progress','Completed','Cancelled') NOT NULL DEFAULT 'Pending', notes TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ CONSTRAINT fk_appt_pet FOREIGN KEY (pet_id) REFERENCES pets(id) ON DELETE CASCADE, CONSTRAINT fk_appt_vet FOREIGN KEY (veterinarian_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS vaccinations (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, pet_id BIGINT UNSIGNED NOT NULL, vaccine VARCHAR(120) NOT NULL, date_given DATE NOT NULL, next_due DATE NULL, veterinarian_id BIGINT UNSIGNED NULL, notes TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ CONSTRAINT fk_vax_pet FOREIGN KEY (pet_id) REFERENCES pets(id) ON DELETE CASCADE, CONSTRAINT fk_vax_vet FOREIGN KEY (veterinarian_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS adoption_records (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, pet_name VARCHAR(120) NOT NULL, species VARCHAR(40) NOT NULL, breed VARCHAR(120), age VARCHAR(40), gender VARCHAR(20), health_status VARCHAR(80) DEFAULT 'Unknown', status ENUM('Available','Pending','Adopted') NOT NULL DEFAULT 'Available', reason TEXT, adopter_name VARCHAR(120), adopted_at DATE NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS clinic_settings (
+ id TINYINT UNSIGNED PRIMARY KEY DEFAULT 1, clinic_name VARCHAR(160) NOT NULL DEFAULT 'City Veterinary Office', email VARCHAR(190), phone VARCHAR(40), address VARCHAR(255), updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;

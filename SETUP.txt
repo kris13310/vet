@@ -1,0 +1,12 @@
+VETERINARY CLINIC DATABASE CONNECTION
+
+1. Copy the project folder into your PHP web server document root (for XAMPP, C:\xampp\htdocs\veterinary_clinic_project\).
+2. Start Apache and MySQL in XAMPP.
+3. Open phpMyAdmin and import veterinary_clinic_db.sql. This creates veterinary_clinic_db and the required tables.
+4. Check config.php. Defaults are MySQL host 127.0.0.1, database veterinary_clinic_db, user root, blank password. Change if your MySQL credentials differ.
+5. Open http://localhost/veterinary_clinic_project/ (do not open index.html directly as a file).
+6. Create an account using the sign-up screen, then sign in.
+
+Pet Records, Appointments, Vaccinations, and Adoption now load from MySQL through api/records.php. Create/edit/delete and adoption status changes are sent to the database. Appointments and vaccinations reference pets by pet name in the UI and by pet_id in MySQL. The selected veterinarian label is stored in the existing notes field so the current built-in veterinarian choices remain visible; it is not linked to a users account unless a matching veterinarian account exists.
+
+Important: If you already have records, back up the database before importing/re-running the SQL. The SQL uses CREATE TABLE IF NOT EXISTS and will not erase existing records.
